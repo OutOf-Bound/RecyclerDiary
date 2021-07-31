@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity() {
         bottomNavigation.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.home -> {
+                    showFragment(HomeFragment.newInstance())
                     true
                 }
                 R.id.calendar -> {

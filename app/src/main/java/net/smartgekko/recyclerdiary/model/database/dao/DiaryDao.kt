@@ -1,9 +1,8 @@
 package net.smartgekko.recyclerdiary.model.database.dao
 
 import androidx.room.*
-import net.smartgekko.recyclerdiary.model.Event
+import net.smartgekko.recyclerdiary.model.database.entities.Event
 import net.smartgekko.recyclerdiary.model.database.entities.Events
-import java.util.*
 
 @Dao
 interface DiaryDao {

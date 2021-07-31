@@ -1,6 +1,6 @@
 package net.smartgekko.recyclerdiary.repositories
 
-import net.smartgekko.recyclerdiary.model.Event
+import net.smartgekko.recyclerdiary.model.database.entities.Event
 import net.smartgekko.recyclerdiary.model.database.dao.DiaryDao
 import net.smartgekko.recyclerdiary.utilites.MyApplication
 
@@ -15,50 +15,54 @@ object MainRepository {
     fun getEventsCountByDate(
         date: String,
         onSuccess: (eventsCount: Int) -> Unit,
-        onError: () -> Unit
+        onError: (t: Throwable) -> Unit
     ) {
         try {
             onSuccess.invoke(diaryDao.getEventsCountByDate(date)!!)
         } catch (e: Exception) {
-            onError.invoke()
+            val t = Throwable("Events count getting failed")
+            onError.invoke(t)
         }
     }
 
     fun getEventsByDate(
         date: String,
         onSuccess: (events: List<Event>) -> Unit,
-        onError: () -> Unit
+        onError: (t: Throwable) -> Unit
     ) {
         try {
             onSuccess.invoke(diaryDao.getEventsByDate(date)!!)
         } catch (e: Exception) {
-            onError.invoke()
+            val t = Throwable("Events getting failed")
+            onError.invoke(t)
         }
     }
 
     fun addToEvents(
         event: Event?,
         onSuccess: () -> Unit,
-        onError: () -> Unit
+        onError: (t: Throwable) -> Unit
     ) {
         try {
             diaryDao.insert(event)
             onSuccess.invoke()
         } catch (e: Exception) {
-            onError.invoke()
+            val t = Throwable("Events adding failed")
+            onError.invoke(t)
         }
     }
 
     fun removeFromNotes(
         event: Event?,
         onSuccess: () -> Unit,
-        onError: () -> Unit
+        onError: (t: Throwable) -> Unit
     ) {
         try {
             diaryDao.delete(event)
             onSuccess.invoke()
         } catch (e: Exception) {
-            onError.invoke()
+            val t = Throwable("Events deleting failed")
+            onError.invoke(t)
         }
     }
 }

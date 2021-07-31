@@ -5,56 +5,79 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import net.smartgekko.recyclerdiary.R
+import net.smartgekko.recyclerdiary.model.database.entities.Event
+import net.smartgekko.recyclerdiary.utilites.DateTimeUtils
+import net.smartgekko.recyclerdiary.utilites.TimeList
+import net.smartgekko.recyclerdiary.viewmodels.AppState
+import net.smartgekko.recyclerdiary.viewmodels.HomeViewModel
+import net.smartgekko.recyclerdiary.views.adapters.RecyclerActivityAdapter
+import java.util.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [HomeFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class HomeFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var viewModel: HomeViewModel
+    private lateinit var eventsList: RecyclerView
+    private lateinit var eventsAdapter: RecyclerActivityAdapter
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+        viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+        viewModel.getLiveData().observe(viewLifecycleOwner, { renderData(it) })
+        lifecycle.addObserver(viewModel)
+        viewModel.getTodayEvents(DateTimeUtils.getDateAsString(Date()))
+
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false)
+        val view: View = inflater.inflate(R.layout.fragment_home, container, false)
+        eventsList = view.findViewById(R.id.homeRecycler)
+        eventsAdapter = RecyclerActivityAdapter(listOf())
+        eventsList.adapter = eventsAdapter
+        return view
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment HomeFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            HomeFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+        fun newInstance() = HomeFragment().apply {}
+    }
+
+
+    private fun renderData(appState: AppState) {
+        val loadingLayout: ProgressBar? = view?.findViewById(R.id.loadingLayout)
+
+        when (appState) {
+            is AppState.SuccessEventsByDate -> {
+                val events = appState.events
+                loadingLayout?.visibility = View.GONE
+                setData(events)
             }
+            is AppState.Loading -> {
+                loadingLayout?.visibility = View.VISIBLE
+            }
+            is AppState.Error -> {
+                loadingLayout?.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun setData(events: List<Event>) {
+        val outEventsList: ArrayList<Event> = arrayListOf()
+        val timeList = TimeList.timeList
+        var counter =0
+        for(i in 0..events.size-1){
+            while(events[i].time!=timeList[counter]){
+                outEventsList.add(Event(0,"",timeList[counter],"","",0))
+                counter++
+            }
+            outEventsList.add(events[i])
+        }
+        eventsAdapter.updateEvents(outEventsList)
     }
 }

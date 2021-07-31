@@ -1,6 +1,6 @@
 package net.smartgekko.recyclerdiary.viewmodels
 
-import net.smartgekko.recyclerdiary.model.Event
+import net.smartgekko.recyclerdiary.model.database.entities.Event
 
 sealed class AppState {
     data class SuccessEventsCount(val eventsCount: Int) : AppState()

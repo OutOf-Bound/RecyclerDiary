@@ -1,4 +1,5 @@
 package net.smartgekko.recyclerdiary.utilites
 
-const val NUM_PAGES_HOME = 3
+const val ITEM_TYPE_EVENT = 1
+const val ITEM_TYPE_TIME = 0
 
