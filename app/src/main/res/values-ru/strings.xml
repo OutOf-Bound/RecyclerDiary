@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Ежедневник</string>
+    <string name="day1">Воскресенье</string>
+    <string name="day2">Понедельник</string>
+    <string name="day3">Вторник</string>
+    <string name="day4">Среда</string>
+    <string name="day5">Четверг</string>
+    <string name="day6">Пятница</string>
+    <string name="day7">Суббота</string>
+    <string name="home">Сегодня</string>
+    <string name="calendar">Календарь</string>
+    <string name="settings">Настройки</string>
+</resources>

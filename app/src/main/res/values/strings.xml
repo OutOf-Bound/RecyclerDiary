@@ -1,3 +1,15 @@
 <resources>
-    <string name="app_name">RecyclerDiary</string>
+    <string name="app_name">The Diary</string>
+    <string name="day1">Sunday</string>
+    <string name="day2">Monday</string>
+    <string name="day3">Tuesday</string>
+    <string name="day4">Wednesday</string>
+    <string name="day5">Thursday</string>
+    <string name="day6">Friday</string>
+    <string name="day7">Saturday</string>
+    <string name="home">Today</string>
+    <string name="calendar">Calendar</string>
+    <string name="settings">Settings</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
