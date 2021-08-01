@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -17,6 +18,7 @@ import net.smartgekko.recyclerdiary.utilites.DateTimeUtils
 import net.smartgekko.recyclerdiary.utilites.TimeList
 import net.smartgekko.recyclerdiary.viewmodels.AppState
 import net.smartgekko.recyclerdiary.viewmodels.HomeViewModel
+import net.smartgekko.recyclerdiary.views.adapters.ItemTouchHelperCallback
 import net.smartgekko.recyclerdiary.views.adapters.OnListItemClickListener
 import net.smartgekko.recyclerdiary.views.adapters.RecyclerActivityAdapter
 import java.util.*
@@ -25,6 +27,8 @@ class HomeFragment : Fragment(),OnListItemClickListener {
     private lateinit var viewModel: HomeViewModel
     private lateinit var eventsList: RecyclerView
     private lateinit var eventsAdapter: RecyclerActivityAdapter
+    lateinit var itemTouchHelper: ItemTouchHelper
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,9 +51,14 @@ class HomeFragment : Fragment(),OnListItemClickListener {
         lifecycle.addObserver(viewModel)
         eventsList = requireView().findViewById(R.id.homeRecycler)
         eventsAdapter = RecyclerActivityAdapter(
-            arrayListOf(),this )
+            arrayListOf() )
         eventsList.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         eventsList.adapter = eventsAdapter
+
+        itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(eventsAdapter))
+        itemTouchHelper.attachToRecyclerView(eventsList)
+
+
         getTodayEvents()
     }
 
@@ -84,14 +93,14 @@ class HomeFragment : Fragment(),OnListItemClickListener {
     }
 
     private fun setData(events: List<Event>) {
-        val outEventsList: ArrayList<Event> = arrayListOf()
+        val outEventsList: MutableList<Pair<Event, Boolean>> = arrayListOf()
         val timeList = TimeList.timeList
 
             for(i in 0..timeList.size-1){
-                outEventsList.add(Event(0,DateTimeUtils.getDateAsString(Date()),timeList[i],"","",0))
+                outEventsList.add(outEventsList.size,Pair(Event(0,DateTimeUtils.getDateAsString(Date()),timeList[i],"","",0),false))
                 for(j in 0..events.size-1){
                     if(events[j].time.equals(timeList[i])) {
-                            outEventsList.add(events[j])
+                            outEventsList.add(outEventsList.size,Pair(events[j],false))
                         }
                 }
             }
