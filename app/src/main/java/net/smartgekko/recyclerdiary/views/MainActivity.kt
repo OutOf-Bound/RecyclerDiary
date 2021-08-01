@@ -50,7 +50,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showFragment(fragment: Fragment) {
-
         supportFragmentManager.beginTransaction()
             .replace(binding.fragmentsContainer.id, fragment)
             .commitAllowingStateLoss()

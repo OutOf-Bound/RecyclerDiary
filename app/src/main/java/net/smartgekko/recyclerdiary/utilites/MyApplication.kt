@@ -1,4 +1,5 @@
 package net.smartgekko.recyclerdiary.utilites
+
 import android.content.Context
 import androidx.room.Room
 import net.smartgekko.recyclerdiary.model.database.database.MainDatabase

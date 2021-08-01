@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,11 +24,14 @@ import net.smartgekko.recyclerdiary.views.adapters.OnListItemClickListener
 import net.smartgekko.recyclerdiary.views.adapters.RecyclerActivityAdapter
 import java.util.*
 
-class HomeFragment : Fragment(),OnListItemClickListener {
+class HomeFragment : Fragment(), OnListItemClickListener {
     private lateinit var viewModel: HomeViewModel
     private lateinit var eventsList: RecyclerView
     private lateinit var eventsAdapter: RecyclerActivityAdapter
+    private lateinit var saveButton: ConstraintLayout
     lateinit var itemTouchHelper: ItemTouchHelper
+    val outEventsList: MutableList<Pair<Event, Boolean>> = arrayListOf()
+    var eventListStartState: Int = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,25 +43,28 @@ class HomeFragment : Fragment(),OnListItemClickListener {
         savedInstanceState: Bundle?
     ): View? {
         val view: View = inflater.inflate(R.layout.fragment_home, container, false)
-
-
         return view
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         viewModel.getLiveData().observe(viewLifecycleOwner, { renderData(it) })
         lifecycle.addObserver(viewModel)
+
         eventsList = requireView().findViewById(R.id.homeRecycler)
-        eventsAdapter = RecyclerActivityAdapter(
-            arrayListOf() )
-        eventsList.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        eventsAdapter = RecyclerActivityAdapter(arrayListOf())
+        eventsList.layoutManager =
+            LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         eventsList.adapter = eventsAdapter
 
         itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(eventsAdapter))
         itemTouchHelper.attachToRecyclerView(eventsList)
 
+        saveButton = requireView().findViewById(R.id.saveButton)
+        saveButton.setOnClickListener {
+            saveEventsToDB()
+        }
 
         getTodayEvents()
     }
@@ -66,9 +73,6 @@ class HomeFragment : Fragment(),OnListItemClickListener {
         @JvmStatic
         fun newInstance() = HomeFragment().apply {}
     }
-
-
-
 
     private fun renderData(appState: AppState) {
         val loadingLayout: ProgressBar? = view?.findViewById(R.id.loadingLayout)
@@ -81,7 +85,19 @@ class HomeFragment : Fragment(),OnListItemClickListener {
             }
             is AppState.SuccessEvent -> {
                 loadingLayout?.visibility = View.GONE
-                getTodayEvents()
+
+            }
+            is AppState.SuccessDeleteEventsByDate -> {
+                var counter = 0
+                for (event in outEventsList) {
+                    if (!event.first.title.isBlank()) {
+                        counter++
+                        event.first.order_id = counter
+                        viewModel.saveEvent(event.first)
+                    }
+                }
+                loadingLayout?.visibility = View.GONE
+
             }
             is AppState.Loading -> {
                 loadingLayout?.visibility = View.VISIBLE
@@ -93,29 +109,36 @@ class HomeFragment : Fragment(),OnListItemClickListener {
     }
 
     private fun setData(events: List<Event>) {
-        val outEventsList: MutableList<Pair<Event, Boolean>> = arrayListOf()
+
         val timeList = TimeList.timeList
 
-            for(i in 0..timeList.size-1){
-                outEventsList.add(outEventsList.size,Pair(Event(0,DateTimeUtils.getDateAsString(Date()),timeList[i],"","",0),false))
-                for(j in 0..events.size-1){
-                    if(events[j].time.equals(timeList[i])) {
-                            outEventsList.add(outEventsList.size,Pair(events[j],false))
-                        }
+        for (i in 0..timeList.size - 1) {
+            outEventsList.add(
+                outEventsList.size,
+                Pair(
+                    Event(0, 0, DateTimeUtils.getDateAsString(Date()), timeList[i], "", "", 0),
+                    false
+                )
+            )
+            for (j in 0..events.size - 1) {
+                if (events[j].time.equals(timeList[i])) {
+                    outEventsList.add(outEventsList.size, Pair(events[j], false))
                 }
             }
+        }
+        eventListStartState = outEventsList.hashCode()
         eventsAdapter.updateEvents(outEventsList)
     }
 
     override fun onItemClick(event: Event) {
-        addEvent(event.time,event.date)
+        // addEvent(event.time,event.date)
     }
 
-    public fun addEvent(time:String,date:String){
-        viewModel.addTodayEvents(Event(0,date,time,"New Event","Event description here",1))
-    }
-
-    private fun getTodayEvents(){
+    private fun getTodayEvents() {
         viewModel.getTodayEvents(DateTimeUtils.getDateAsString(Date()))
+    }
+
+    private fun saveEventsToDB() {
+        viewModel.deleteEventsByDate(DateTimeUtils.getDateAsString(Date()))
     }
 }
