@@ -2,24 +2,18 @@ package net.smartgekko.recyclerdiary.views.adapters
 
 import android.graphics.Color
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.MotionEventCompat
-import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.RecyclerView
 import net.smartgekko.recyclerdiary.R
 import net.smartgekko.recyclerdiary.model.database.entities.Event
 import net.smartgekko.recyclerdiary.utilites.DateTimeUtils
 import net.smartgekko.recyclerdiary.utilites.ITEM_TYPE_EVENT
 import net.smartgekko.recyclerdiary.utilites.ITEM_TYPE_TIME
-import net.smartgekko.recyclerdiary.viewmodels.HomeViewModel
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class RecyclerActivityAdapter(
@@ -78,11 +72,11 @@ class RecyclerActivityAdapter(
             notifyItemChanged(layoutPosition)
         }
         override fun onItemSelected() {
-            itemView.setBackgroundColor(Color.LTGRAY)
+            itemView.setBackgroundColor(Color.YELLOW)
         }
 
         override fun onItemClear() {
-            itemView.setBackgroundColor(0)
+            itemView.setBackgroundColor(Color.WHITE)
         }
 
     }
@@ -111,8 +105,14 @@ class RecyclerActivityAdapter(
     }
 
     override fun onItemMove(fromPosition: Int, toPosition: Int) {
-        events.removeAt(fromPosition).apply {
-            events.add(if (toPosition > fromPosition) toPosition - 1 else toPosition, this)
+        if (fromPosition < toPosition) {
+            for (i in fromPosition until toPosition) {
+                Collections.swap(events, i, i + 1)
+            }
+        } else {
+            for (i in fromPosition downTo toPosition + 1) {
+                Collections.swap(events, i, i - 1)
+            }
         }
         notifyItemMoved(fromPosition, toPosition)
 

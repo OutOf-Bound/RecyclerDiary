@@ -11,5 +11,5 @@
     <string name="home">Сегодня</string>
     <string name="calendar">Календарь</string>
     <string name="settings">Настройки</string>
-    <string name="today_events">Дела сегодня</string>
+    <string name="today_events">Список дел на сегодня</string>
 </resources>
