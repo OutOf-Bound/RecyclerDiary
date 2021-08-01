@@ -12,16 +12,13 @@ class HomeViewModel(private val liveDataToObserve: MutableLiveData<AppState> = M
 
     fun getLiveData() = liveDataToObserve
     fun getTodayEvents(date: String) = getTodayEventsFromDbSource(date)
-    fun addTodayEvents(event: Event) {
-        addNewEvent(event)
-    }
     fun saveEvent(event: Event) {
-        addNewEvent(event)
+        addNewEventToDb(event)
     }
+
     fun deleteEventsByDate(date: String) {
         deleteEventsByDatefromDB(date)
     }
-
 
     private fun getTodayEventsFromDbSource(date: String) {
         liveDataToObserve.value = AppState.Loading
@@ -34,14 +31,15 @@ class HomeViewModel(private val liveDataToObserve: MutableLiveData<AppState> = M
                 liveDataToObserve.postValue(AppState.Error(throwable))
             }
 
-            MainRepository. getEventsByDate(
+            MainRepository.getEventsByDate(
                 date,
                 onSuccess = ::onEventsFetched,
                 onError = ::onError
             )
         }.start()
     }
-    private fun addNewEvent(event: Event) {
+
+    private fun addNewEventToDb(event: Event) {
         liveDataToObserve.value = AppState.Loading
         Thread {
             fun onEventAdded() {
@@ -59,10 +57,11 @@ class HomeViewModel(private val liveDataToObserve: MutableLiveData<AppState> = M
             )
         }.start()
     }
+
     private fun deleteEventsByDatefromDB(date: String) {
         liveDataToObserve.value = AppState.Loading
         Thread {
-            fun onEventsDeleted(code:Int) {
+            fun onEventsDeleted(code: Int) {
                 liveDataToObserve.postValue(AppState.SuccessDeleteEventsByDate(code))
             }
 
@@ -77,5 +76,4 @@ class HomeViewModel(private val liveDataToObserve: MutableLiveData<AppState> = M
             )
         }.start()
     }
-
 }

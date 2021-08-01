@@ -68,7 +68,7 @@ object MainRepository {
 
     fun removeFromEventsByDate(
         date: String?,
-        onSuccess: (code:Int) -> Unit,
+        onSuccess: (code: Int) -> Unit,
         onError: (t: Throwable) -> Unit
     ) {
         try {

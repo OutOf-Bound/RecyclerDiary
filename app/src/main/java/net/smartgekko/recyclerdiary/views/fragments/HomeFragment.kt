@@ -24,14 +24,14 @@ import net.smartgekko.recyclerdiary.views.adapters.OnListItemClickListener
 import net.smartgekko.recyclerdiary.views.adapters.RecyclerActivityAdapter
 import java.util.*
 
-class HomeFragment : Fragment(),OnListItemClickListener {
+class HomeFragment : Fragment(), OnListItemClickListener {
     private lateinit var viewModel: HomeViewModel
     private lateinit var eventsList: RecyclerView
     private lateinit var eventsAdapter: RecyclerActivityAdapter
     private lateinit var saveButton: ConstraintLayout
     lateinit var itemTouchHelper: ItemTouchHelper
     val outEventsList: MutableList<Pair<Event, Boolean>> = arrayListOf()
-    var eventListStartState: Int =0
+    var eventListStartState: Int = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,19 +54,21 @@ class HomeFragment : Fragment(),OnListItemClickListener {
 
         eventsList = requireView().findViewById(R.id.homeRecycler)
         eventsAdapter = RecyclerActivityAdapter(arrayListOf())
-        eventsList.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        eventsList.layoutManager =
+            LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         eventsList.adapter = eventsAdapter
 
         itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(eventsAdapter))
         itemTouchHelper.attachToRecyclerView(eventsList)
 
-        saveButton= requireView().findViewById(R.id.saveButton)
+        saveButton = requireView().findViewById(R.id.saveButton)
         saveButton.setOnClickListener {
             saveEventsToDB()
         }
 
         getTodayEvents()
     }
+
     companion object {
         @JvmStatic
         fun newInstance() = HomeFragment().apply {}
@@ -86,9 +88,9 @@ class HomeFragment : Fragment(),OnListItemClickListener {
 
             }
             is AppState.SuccessDeleteEventsByDate -> {
-                var counter =0
-                for(event in outEventsList){
-                    if(!event.first.title.isBlank()){
+                var counter = 0
+                for (event in outEventsList) {
+                    if (!event.first.title.isBlank()) {
                         counter++
                         event.first.order_id = counter
                         viewModel.saveEvent(event.first)
@@ -110,32 +112,33 @@ class HomeFragment : Fragment(),OnListItemClickListener {
 
         val timeList = TimeList.timeList
 
-            for(i in 0..timeList.size-1){
-                outEventsList.add(outEventsList.size,Pair(Event(0,0,DateTimeUtils.getDateAsString(Date()),timeList[i],"","",0),false))
-                for(j in 0..events.size-1){
-                    if(events[j].time.equals(timeList[i])) {
-                            outEventsList.add(outEventsList.size,Pair(events[j],false))
-                        }
+        for (i in 0..timeList.size - 1) {
+            outEventsList.add(
+                outEventsList.size,
+                Pair(
+                    Event(0, 0, DateTimeUtils.getDateAsString(Date()), timeList[i], "", "", 0),
+                    false
+                )
+            )
+            for (j in 0..events.size - 1) {
+                if (events[j].time.equals(timeList[i])) {
+                    outEventsList.add(outEventsList.size, Pair(events[j], false))
                 }
             }
-        eventListStartState =outEventsList.hashCode()
+        }
+        eventListStartState = outEventsList.hashCode()
         eventsAdapter.updateEvents(outEventsList)
     }
 
     override fun onItemClick(event: Event) {
-       // addEvent(event.time,event.date)
+        // addEvent(event.time,event.date)
     }
 
-    fun addEvent(time:String,date:String){
-       // viewModel.addTodayEvents(Event(0,0,date,time,"New Event","Event description here",1))
-    }
-
-    private fun getTodayEvents(){
+    private fun getTodayEvents() {
         viewModel.getTodayEvents(DateTimeUtils.getDateAsString(Date()))
     }
 
-    private fun saveEventsToDB(){
+    private fun saveEventsToDB() {
         viewModel.deleteEventsByDate(DateTimeUtils.getDateAsString(Date()))
-
     }
 }
