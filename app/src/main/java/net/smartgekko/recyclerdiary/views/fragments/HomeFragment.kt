@@ -6,30 +6,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import net.smartgekko.recyclerdiary.R
 import net.smartgekko.recyclerdiary.model.database.entities.Event
 import net.smartgekko.recyclerdiary.utilites.DateTimeUtils
 import net.smartgekko.recyclerdiary.utilites.TimeList
 import net.smartgekko.recyclerdiary.viewmodels.AppState
 import net.smartgekko.recyclerdiary.viewmodels.HomeViewModel
+import net.smartgekko.recyclerdiary.views.adapters.OnListItemClickListener
 import net.smartgekko.recyclerdiary.views.adapters.RecyclerActivityAdapter
 import java.util.*
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(),OnListItemClickListener {
     private lateinit var viewModel: HomeViewModel
     private lateinit var eventsList: RecyclerView
     private lateinit var eventsAdapter: RecyclerActivityAdapter
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
-        viewModel.getLiveData().observe(viewLifecycleOwner, { renderData(it) })
-        lifecycle.addObserver(viewModel)
-        viewModel.getTodayEvents(DateTimeUtils.getDateAsString(Date()))
-
     }
 
     override fun onCreateView(
@@ -37,16 +35,30 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view: View = inflater.inflate(R.layout.fragment_home, container, false)
-        eventsList = view.findViewById(R.id.homeRecycler)
-        eventsAdapter = RecyclerActivityAdapter(listOf())
-        eventsList.adapter = eventsAdapter
+
+
         return view
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+        viewModel.getLiveData().observe(viewLifecycleOwner, { renderData(it) })
+        lifecycle.addObserver(viewModel)
+        eventsList = requireView().findViewById(R.id.homeRecycler)
+        eventsAdapter = RecyclerActivityAdapter(
+            arrayListOf(),this )
+        eventsList.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        eventsList.adapter = eventsAdapter
+        getTodayEvents()
     }
 
     companion object {
         @JvmStatic
         fun newInstance() = HomeFragment().apply {}
     }
+
+
 
 
     private fun renderData(appState: AppState) {
@@ -57,6 +69,10 @@ class HomeFragment : Fragment() {
                 val events = appState.events
                 loadingLayout?.visibility = View.GONE
                 setData(events)
+            }
+            is AppState.SuccessEvent -> {
+                loadingLayout?.visibility = View.GONE
+                getTodayEvents()
             }
             is AppState.Loading -> {
                 loadingLayout?.visibility = View.VISIBLE
@@ -70,14 +86,27 @@ class HomeFragment : Fragment() {
     private fun setData(events: List<Event>) {
         val outEventsList: ArrayList<Event> = arrayListOf()
         val timeList = TimeList.timeList
-        var counter =0
-        for(i in 0..events.size-1){
-            while(events[i].time!=timeList[counter]){
-                outEventsList.add(Event(0,"",timeList[counter],"","",0))
-                counter++
+
+            for(i in 0..timeList.size-1){
+                outEventsList.add(Event(0,DateTimeUtils.getDateAsString(Date()),timeList[i],"","",0))
+                for(j in 0..events.size-1){
+                    if(events[j].time.equals(timeList[i])) {
+                            outEventsList.add(events[j])
+                        }
+                }
             }
-            outEventsList.add(events[i])
-        }
         eventsAdapter.updateEvents(outEventsList)
+    }
+
+    override fun onItemClick(event: Event) {
+        addEvent(event.time,event.date)
+    }
+
+    public fun addEvent(time:String,date:String){
+        viewModel.addTodayEvents(Event(0,date,time,"New Event","Event description here",1))
+    }
+
+    private fun getTodayEvents(){
+        viewModel.getTodayEvents(DateTimeUtils.getDateAsString(Date()))
     }
 }

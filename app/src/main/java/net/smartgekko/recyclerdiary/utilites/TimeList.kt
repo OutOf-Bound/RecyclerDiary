@@ -1,7 +1,7 @@
 package net.smartgekko.recyclerdiary.utilites
 
 object TimeList {
-    val timeList: List<String> = arrayListOf(
+    val timeList = arrayListOf(
         "00:00",
         "01:00",
         "02:00",
@@ -25,7 +25,6 @@ object TimeList {
         "20:00",
         "21:00",
         "22:00",
-        "23:00",
-        "24:00"
+        "23:00"
     )
 }

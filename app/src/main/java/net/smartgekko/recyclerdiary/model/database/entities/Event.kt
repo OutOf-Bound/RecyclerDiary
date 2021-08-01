@@ -4,9 +4,9 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import java.util.*
-@Entity(tableName = "Events", indices = arrayOf(Index(value = ["id"], unique = true)))
+@Entity(tableName = "Events")
 class Event (
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     val id: Long,
     val date: String,
     val time: String,

@@ -2,12 +2,11 @@ package net.smartgekko.recyclerdiary.model.database.dao
 
 import androidx.room.*
 import net.smartgekko.recyclerdiary.model.database.entities.Event
-import net.smartgekko.recyclerdiary.model.database.entities.Events
 
 @Dao
 interface DiaryDao {
     @Query("SELECT * FROM Events")
-    fun getAllEvents(): List<Events>
+    fun getAllEvents(): List<Event>
 
     @Query("SELECT * FROM Events WHERE id = :id")
     fun getEventById(id: Long): Event?
