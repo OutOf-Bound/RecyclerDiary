@@ -8,6 +8,7 @@ import java.util.*
 class Event (
     @PrimaryKey(autoGenerate = true)
     val id: Long,
+    var order_id: Int,
     val date: String,
     val time: String,
     val title: String,

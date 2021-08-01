@@ -52,7 +52,7 @@ object MainRepository {
         }
     }
 
-    fun removeFromNotes(
+    fun removeFromEvents(
         event: Event?,
         onSuccess: () -> Unit,
         onError: (t: Throwable) -> Unit
@@ -62,6 +62,20 @@ object MainRepository {
             onSuccess.invoke()
         } catch (e: Exception) {
             val t = Throwable("Events deleting failed")
+            onError.invoke(t)
+        }
+    }
+
+    fun removeFromEventsByDate(
+        date: String?,
+        onSuccess: (code:Int) -> Unit,
+        onError: (t: Throwable) -> Unit
+    ) {
+        try {
+            diaryDao.deleteByDate(date!!)
+            onSuccess.invoke(1)
+        } catch (e: Exception) {
+            val t = Throwable("Events deleting by date failed")
             onError.invoke(t)
         }
     }

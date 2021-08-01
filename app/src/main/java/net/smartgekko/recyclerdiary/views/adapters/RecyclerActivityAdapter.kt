@@ -87,10 +87,10 @@ class RecyclerActivityAdapter(
             itemView.findViewById<ImageView>(R.id.eventAdd).setOnClickListener {
                // onListItemClickListener.onItemClick(event)
                 if(layoutPosition<events.size-1){
-                    events.add(layoutPosition+1,Pair(Event(0,
+                    events.add(layoutPosition+1,Pair(Event(0,0,
                         DateTimeUtils.getDateAsString(Date()),event.first.time,"New event","Event description here",0),false))
                 } else {
-                    events.add(0,Pair(Event(0,
+                    events.add(0,Pair(Event(0,0,
                         DateTimeUtils.getDateAsString(Date()),event.first.time,"New event","Event description here",0),false))
                 }
                 notifyItemInserted(layoutPosition)
@@ -100,7 +100,8 @@ class RecyclerActivityAdapter(
 
     fun updateEvents(eventsList: MutableList<Pair<Event, Boolean>>) {
         events.clear()
-        events.addAll(eventsList)
+       // events.addAll(eventsList)
+        events = eventsList
         notifyDataSetChanged()
     }
 

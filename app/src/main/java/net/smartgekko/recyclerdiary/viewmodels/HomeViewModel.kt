@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import net.smartgekko.recyclerdiary.model.database.entities.Event
 import net.smartgekko.recyclerdiary.repositories.MainRepository
+import kotlin.random.Random
 
 class HomeViewModel(private val liveDataToObserve: MutableLiveData<AppState> = MutableLiveData()) :
     ViewModel(), LifecycleObserver {
@@ -13,6 +14,12 @@ class HomeViewModel(private val liveDataToObserve: MutableLiveData<AppState> = M
     fun getTodayEvents(date: String) = getTodayEventsFromDbSource(date)
     fun addTodayEvents(event: Event) {
         addNewEvent(event)
+    }
+    fun saveEvent(event: Event) {
+        addNewEvent(event)
+    }
+    fun deleteEventsByDate(date: String) {
+        deleteEventsByDatefromDB(date)
     }
 
 
@@ -52,4 +59,23 @@ class HomeViewModel(private val liveDataToObserve: MutableLiveData<AppState> = M
             )
         }.start()
     }
+    private fun deleteEventsByDatefromDB(date: String) {
+        liveDataToObserve.value = AppState.Loading
+        Thread {
+            fun onEventsDeleted(code:Int) {
+                liveDataToObserve.postValue(AppState.SuccessDeleteEventsByDate(code))
+            }
+
+            fun onError(throwable: Throwable) {
+                liveDataToObserve.postValue(AppState.Error(throwable))
+            }
+
+            MainRepository.removeFromEventsByDate(
+                date,
+                onSuccess = ::onEventsDeleted,
+                onError = ::onError
+            )
+        }.start()
+    }
+
 }
