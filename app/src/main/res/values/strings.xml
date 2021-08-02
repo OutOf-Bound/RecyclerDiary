@@ -10,8 +10,7 @@
     <string name="home">Today</string>
     <string name="calendar">Calendar</string>
     <string name="settings">Settings</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="today_events">Today events</string>
-    <string name="loading">Loading...</string>
+    <string name="loading">Loading…</string>
+    <string name="loading_data">Loading data…</string>
 </resources>

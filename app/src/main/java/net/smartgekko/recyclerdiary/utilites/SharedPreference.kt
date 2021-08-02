@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 
 class SharedPreference(context: Context) {
 
-    private val PREFS_NAME = "NASA_observer_storage_file"
+    private val PREFS_NAME = "Diary_storage_file"
     val sharedPref: SharedPreferences =
         context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 

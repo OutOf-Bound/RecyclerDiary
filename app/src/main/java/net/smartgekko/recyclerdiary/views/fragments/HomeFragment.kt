@@ -1,6 +1,7 @@
 package net.smartgekko.recyclerdiary.views.fragments
 
 import android.os.Bundle
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.Slide
+import androidx.transition.TransitionManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import net.smartgekko.recyclerdiary.R
 import net.smartgekko.recyclerdiary.model.database.entities.Event
@@ -48,8 +51,10 @@ class HomeFragment : Fragment(), OnListItemClickListener {
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
+
         activity?.let { bottomNavigation = requireActivity().findViewById(R.id.bottomNavigation) }
         bottomNavigation.visibility = View.VISIBLE
+
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         viewModel.getLiveData().observe(viewLifecycleOwner, { renderData(it) })
         lifecycle.addObserver(viewModel)

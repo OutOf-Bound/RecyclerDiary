@@ -10,15 +10,19 @@ import android.text.style.*
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
+import android.widget.CompoundButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import net.smartgekko.recyclerdiary.R
+import net.smartgekko.recyclerdiary.utilites.MyApplication
+import net.smartgekko.recyclerdiary.utilites.SharedPreference
 
 
 class OnboardFragment : Fragment() {
-
+    private val sharedPreference: SharedPreference = SharedPreference(MyApplication.getAppContext())
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,6 +30,23 @@ class OnboardFragment : Fragment() {
     ): View? {
         val view: View = inflater.inflate(R.layout.fragment_onboard, container, false)
         val onboardText = view.findViewById<TextView>(R.id.onboardText)
+        val checkBox = view.findViewById<CheckBox>(R.id.checkBox)
+        checkBox.setOnClickListener {
+            when (checkBox.isChecked) {
+                true -> {
+                    sharedPreference.saveBoolean(
+                        "needOnboard",
+                        false
+                    )
+                }
+                else -> {
+                    sharedPreference.saveBoolean(
+                        "needOnboard",
+                        true
+                    )
+                }
+            }
+        }
         val loadingLayout = view.findViewById<ConstraintLayout>(R.id.loadingLayout)
         val closeLayout = view.findViewById<ConstraintLayout>(R.id.closeLayout)
         closeLayout.setOnClickListener {
@@ -35,17 +56,17 @@ class OnboardFragment : Fragment() {
                 .replace(R.id.fragmentsContainer, HomeFragment())
                 .commitAllowingStateLoss()
         }
-
         onboardText.text = prepareText()
         onboardText.isClickable = true
         onboardText.movementMethod = LinkMovementMethod.getInstance()
-
-
         return view
     }
 
-    companion object {
+    override fun onStart() {
+        super.onStart()
+    }
 
+    companion object {
         @JvmStatic
         fun newInstance() = OnboardFragment().apply {
 
@@ -66,7 +87,7 @@ class OnboardFragment : Fragment() {
                     " figure out on their own that new app they are trying out.\n"
         )
         val text_ref: SpannableString =
-            SpannableString("Also, Let’s connect on\n\n Twitter,  Linkedin,\n Github,  Facebook")
+            SpannableString("Also, Let’s connect on\n\n Twitter,  Linkedin,  Github,  Facebook")
 
         sb.append(text_title)
         sb.setSpan(

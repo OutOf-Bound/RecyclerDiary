@@ -9,6 +9,18 @@
     tools:context=".views.fragments.OnboardFragment">
 
     <!-- TODO: Update blank fragment layout -->
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="false"
+        android:elevation="10dp"
+        android:text="Don't show again. I'm understood. "
+        app:layout_constraintEnd_toEndOf="@+id/closeLayout"
+        app:layout_constraintStart_toStartOf="@+id/closeLayout"
+        app:layout_constraintTop_toBottomOf="@+id/closeLayout" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/loadingLayout"
         android:layout_width="match_parent"
@@ -57,6 +69,7 @@
                 android:progress="50"
                 android:progressBackgroundTint="#FFFFFF"
                 android:progressBackgroundTintMode="screen" />
+
         </FrameLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -65,7 +78,7 @@
         android:id="@+id/closeLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="54dp"
         android:background="#039BE5"
         android:elevation="5dp"
         android:paddingHorizontal="10dp"
@@ -89,7 +102,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:fontFamily="@font/ubuntu_regular"
-            android:text="I'm understood. Lets begin."
+            android:text="Continue"
             android:textColor="#FFFFFF"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@+id/imageView"
@@ -109,7 +122,6 @@
         android:background="@drawable/onboard_text_background"
         android:elevation="1dp"
         android:padding="16dp"
-        android:text="@string/hello_blank_fragment"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

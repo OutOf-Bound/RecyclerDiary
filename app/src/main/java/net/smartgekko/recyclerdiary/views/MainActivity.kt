@@ -8,10 +8,7 @@ import net.smartgekko.recyclerdiary.R
 import net.smartgekko.recyclerdiary.databinding.ActivityMainBinding
 import net.smartgekko.recyclerdiary.utilites.MyApplication
 import net.smartgekko.recyclerdiary.utilites.SharedPreference
-import net.smartgekko.recyclerdiary.views.fragments.CalendarFragment
-import net.smartgekko.recyclerdiary.views.fragments.HomeFragment
-import net.smartgekko.recyclerdiary.views.fragments.OnboardFragment
-import net.smartgekko.recyclerdiary.views.fragments.SettingsFragment
+import net.smartgekko.recyclerdiary.views.fragments.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var sharedPreference: SharedPreference
@@ -27,7 +24,7 @@ class MainActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(binding.fragmentsContainer.id, OnboardFragment())
+                .replace(binding.fragmentsContainer.id, SplashFragment())
                 .commitAllowingStateLoss()
         }
         val bottomNavigation = binding.bottomNavigation
