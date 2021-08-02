@@ -6,13 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
-import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import net.smartgekko.recyclerdiary.R
 import net.smartgekko.recyclerdiary.model.database.entities.Event
 import net.smartgekko.recyclerdiary.utilites.DateTimeUtils
@@ -25,6 +24,7 @@ import net.smartgekko.recyclerdiary.views.adapters.RecyclerActivityAdapter
 import java.util.*
 
 class HomeFragment : Fragment(), OnListItemClickListener {
+    private lateinit var bottomNavigation: BottomNavigationView
     private lateinit var viewModel: HomeViewModel
     private lateinit var eventsList: RecyclerView
     private lateinit var eventsAdapter: RecyclerActivityAdapter
@@ -48,6 +48,8 @@ class HomeFragment : Fragment(), OnListItemClickListener {
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
+        activity?.let { bottomNavigation = requireActivity().findViewById(R.id.bottomNavigation) }
+        bottomNavigation.visibility = View.VISIBLE
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         viewModel.getLiveData().observe(viewLifecycleOwner, { renderData(it) })
         lifecycle.addObserver(viewModel)
@@ -75,7 +77,7 @@ class HomeFragment : Fragment(), OnListItemClickListener {
     }
 
     private fun renderData(appState: AppState) {
-        val loadingLayout: ProgressBar? = view?.findViewById(R.id.loadingLayout)
+        val loadingLayout: ProgressBar? = view?.findViewById(R.id.loadingProgressLayout)
 
         when (appState) {
             is AppState.SuccessEventsByDate -> {

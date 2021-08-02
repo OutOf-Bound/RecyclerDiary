@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#016291"
-        android:visibility="visible"
+        android:visibility="gone"
         app:elevation="15dp"
         app:itemIconTint="@color/white"
         app:itemRippleColor="@color/gray"
