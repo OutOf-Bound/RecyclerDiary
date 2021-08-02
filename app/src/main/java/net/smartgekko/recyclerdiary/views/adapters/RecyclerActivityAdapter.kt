@@ -52,7 +52,8 @@ class RecyclerActivityAdapter(
         return if (events[position].first.title.isNullOrBlank()) ITEM_TYPE_TIME else ITEM_TYPE_EVENT
     }
 
-    inner class EventViewHolder(view: View) : RecyclerView.ViewHolder(view),ItemTouchHelperViewHolder {
+    inner class EventViewHolder(view: View) : RecyclerView.ViewHolder(view),
+        ItemTouchHelperViewHolder {
         fun bind(event: Pair<Event, Boolean>) {
             if (layoutPosition != RecyclerView.NO_POSITION) {
                 itemView.findViewById<TextView>(R.id.eventTitle).text = event.first.title
@@ -65,12 +66,14 @@ class RecyclerActivityAdapter(
                 }
             }
         }
+
         private fun toggleText() {
             events[layoutPosition] = events[layoutPosition].let {
                 it.first to !it.second
             }
             notifyItemChanged(layoutPosition)
         }
+
         override fun onItemSelected() {
             itemView.setBackgroundColor(Color.YELLOW)
         }
@@ -78,20 +81,41 @@ class RecyclerActivityAdapter(
         override fun onItemClear() {
             itemView.setBackgroundColor(Color.WHITE)
         }
-
     }
 
     inner class TimeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(event: Pair<Event, Boolean>) {
             itemView.findViewById<TextView>(R.id.timeText).text = event.first.time
             itemView.findViewById<ImageView>(R.id.eventAdd).setOnClickListener {
-               // onListItemClickListener.onItemClick(event)
-                if(layoutPosition<events.size-1){
-                    events.add(layoutPosition+1,Pair(Event(0,
-                        DateTimeUtils.getDateAsString(Date()),event.first.time,"New event","Event description here",0),false))
+                // onListItemClickListener.onItemClick(event)
+                if (layoutPosition < events.size - 1) {
+                    events.add(
+                        layoutPosition + 1, Pair(
+                            Event(
+                                0,
+                                0,
+                                DateTimeUtils.getDateAsString(Date()),
+                                event.first.time,
+                                "New event",
+                                "Event description here",
+                                0
+                            ), false
+                        )
+                    )
                 } else {
-                    events.add(0,Pair(Event(0,
-                        DateTimeUtils.getDateAsString(Date()),event.first.time,"New event","Event description here",0),false))
+                    events.add(
+                        0, Pair(
+                            Event(
+                                0,
+                                0,
+                                DateTimeUtils.getDateAsString(Date()),
+                                event.first.time,
+                                "New event",
+                                "Event description here",
+                                0
+                            ), false
+                        )
+                    )
                 }
                 notifyItemInserted(layoutPosition)
             }
@@ -100,7 +124,8 @@ class RecyclerActivityAdapter(
 
     fun updateEvents(eventsList: MutableList<Pair<Event, Boolean>>) {
         events.clear()
-        events.addAll(eventsList)
+        // events.addAll(eventsList)
+        events = eventsList
         notifyDataSetChanged()
     }
 
@@ -115,13 +140,10 @@ class RecyclerActivityAdapter(
             }
         }
         notifyItemMoved(fromPosition, toPosition)
-
     }
 
     override fun onItemDismiss(position: Int) {
         events.removeAt(position)
         notifyItemRemoved(position)
     }
-
-
 }

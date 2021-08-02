@@ -5,13 +5,45 @@
     android:id="@+id/homeRootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#016291"
     tools:context=".views.fragments.HomeFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/saveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/b_save_button"
+        android:backgroundTint="#039BE5"
+        app:layout_constraintBottom_toTopOf="@+id/homeRecycler"
+        app:layout_constraintEnd_toStartOf="@+id/loadingProgressLayout"
+        app:layout_constraintStart_toEndOf="@+id/homeTitle"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/saveText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="1dp"
+            android:gravity="center"
+            android:text="Save"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/homeRecycler"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#020000"
+        android:background="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,20 +51,20 @@
 
     <TextView
         android:id="@+id/homeTitle"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:background="#000000"
+        android:background="#016291"
         android:fontFamily="sans-serif-condensed-medium"
         android:gravity="left|center_vertical"
         android:paddingHorizontal="8dp"
         android:text="@string/today_events"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
+        android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:background="#FFFFFF"
@@ -40,7 +72,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <ProgressBar
-        android:id="@+id/loadingLayout"
+        android:id="@+id/loadingProgressLayout"
         style="@android:style/Widget.Material.ProgressBar.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -52,6 +84,7 @@
         android:indeterminateTint="@color/white"
         android:minHeight="5dp"
         android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/homeRecycler"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

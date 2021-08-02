@@ -2,14 +2,13 @@ package net.smartgekko.recyclerdiary.views
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.Fragment
 import net.smartgekko.recyclerdiary.R
 import net.smartgekko.recyclerdiary.databinding.ActivityMainBinding
 import net.smartgekko.recyclerdiary.utilites.MyApplication
 import net.smartgekko.recyclerdiary.utilites.SharedPreference
-import net.smartgekko.recyclerdiary.views.fragments.CalendarFragment
-import net.smartgekko.recyclerdiary.views.fragments.HomeFragment
-import net.smartgekko.recyclerdiary.views.fragments.SettingsFragment
+import net.smartgekko.recyclerdiary.views.fragments.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var sharedPreference: SharedPreference
@@ -20,13 +19,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         myapp.create()
         sharedPreference = SharedPreference(MyApplication.getAppContext())
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(binding.fragmentsContainer.id, HomeFragment())
+                .replace(binding.fragmentsContainer.id, SplashFragment())
                 .commitAllowingStateLoss()
         }
         val bottomNavigation = binding.bottomNavigation
@@ -50,7 +48,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showFragment(fragment: Fragment) {
-
         supportFragmentManager.beginTransaction()
             .replace(binding.fragmentsContainer.id, fragment)
             .commitAllowingStateLoss()
